@@ -1,3 +1,2 @@
-import Login from "./login";
-
-export { Login };
+export * from "./login";
+export * from "./register";
