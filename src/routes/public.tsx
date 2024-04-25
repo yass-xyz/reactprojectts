@@ -1,11 +1,9 @@
 import type { RouteObject } from "react-router";
-import { lazyImport } from "../utils/lazyImport";
+import { lazyImport } from "@/utils/lazyImport";
 
 // *  AUTHENTICATION PAGES
-const { Login } = lazyImport(() => import("../pages/auth"), "Login");
-const { Register } = lazyImport(() => import("../pages/auth"), "Register");
-
-const { NotFound } = lazyImport(() => import("../pages/notFound"), "NotFound");
+const { Login } = lazyImport(() => import("@/pages/auth"), "Login");
+const { Register } = lazyImport(() => import("@/pages/auth"), "Register");
 
 const routes: RouteObject[] = [
   {
@@ -20,11 +18,6 @@ const routes: RouteObject[] = [
         element: <Register />,
       },
     ],
-  },
-
-  {
-    path: "*",
-    element: <NotFound />,
   },
 ];
 
