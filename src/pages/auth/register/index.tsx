@@ -45,7 +45,7 @@ export function Register() {
       email: data.get("email"),
       password: data.get("password"),
     });
-    notify({ msg: "success", variant: "success" });
+    notify({ msg: "success", type: "success" });
     notify({ msg: "default" });
   };
 
