@@ -2,7 +2,7 @@ import Axios, { InternalAxiosRequestConfig } from "axios";
 
 import { useNotification } from "@/components/hooks";
 import storage from "@/utils/storage";
-const API_URL = process.env.REACT_APP_API_URL as string;
+const API_URL = import.meta.env.VITE_REACT_APP_API_URL as string;
 
 function authRequestInterceptor(config: InternalAxiosRequestConfig) {
   const token = storage.getToken();
