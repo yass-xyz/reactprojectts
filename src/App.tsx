@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { SnackbarProvider } from "notistack";
 import { BrowserRouter } from "react-router-dom";
 import { AppRoutes } from "./routes";
+import { AuthProvider } from "./providers/auth/AuthProvider";
 
 import "./App.css";
 
@@ -15,9 +16,11 @@ function App() {
       }
     >
       <SnackbarProvider maxSnack={3} dense hideIconVariant>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
+        <AuthProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </AuthProvider>
       </SnackbarProvider>
     </Suspense>
   );
