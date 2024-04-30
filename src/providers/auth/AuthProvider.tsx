@@ -1,20 +1,20 @@
-import { useState, createContext, useContext, useMemo } from "react";
+import { useState, useEffect, createContext, useContext, useMemo } from "react";
+import { AuthUser } from "@/api/auth/types";
+import { useLoginUser } from "@/api/auth";
+import { useNavigate } from "react-router-dom";
+import storage from "@/utils/storage";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-empty-pattern
 const StoreContext = createContext([{} as any, ({}) => {}]);
 
-type User = {
-  userName: string | undefined;
-  mail: string | undefined;
-  name: string | undefined;
-  firstName: string | undefined;
-  (): User;
-};
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function AuthProvider(props: any) {
-  const [user, setUser] = useState({} as User);
+  const [user, setUser] = useState({} as AuthUser);
+  const loginMutation = useLoginUser();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const value: any = useMemo(() => [user, setUser], [user]);
+  const value: any = useMemo(
+    () => [user, setUser, loginMutation],
+    [user, loginMutation]
+  );
 
   // useEffect(async () => {
   // Add Logic on app Mount
@@ -39,11 +39,22 @@ function AuthProvider(props: any) {
 
 function useAuthStore() {
   const context = useContext(StoreContext);
+  const navigate = useNavigate();
   if (!context)
     throw new Error("useAuthStore must be used within a StoreProvider");
-  const [user, setUser] = context;
+  const [user, setUser, loginMutation] = context;
 
-  const update = (user: User) => setUser(user);
+  useEffect(() => {
+    const { isSuccess, data } = loginMutation;
+    if (isSuccess) {
+      console.log("loginMutation", data);
+      storage.setToken(data.jwt);
+      setUser(data.user);
+      navigate("/dashBoard");
+    }
+  }, [navigate, loginMutation, setUser]);
+
+  const update = (user: AuthUser) => setUser(user);
 
   const isAuthenticated = () => {
     if (user.userName) {
@@ -52,10 +63,16 @@ function useAuthStore() {
     return false;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const loginUser = (data: any) => {
+    loginMutation.mutate(data);
+  };
+
   return {
     user,
     update,
     isAuthenticated,
+    loginUser,
   };
 }
 

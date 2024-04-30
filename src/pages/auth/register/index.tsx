@@ -12,7 +12,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useNotification } from "@/components/hooks";
+import { useRegisterUser } from "@/api/auth";
+import { Navigate } from "react-router-dom";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Copyright(props: any) {
@@ -37,16 +38,20 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export function Register() {
-  const { notify } = useNotification();
+  const registerMutation = useRegisterUser();
+  if (registerMutation.isSuccess) {
+    return <Navigate to={"/auth/login"} />;
+  }
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+    registerMutation.mutate({
+      mail: data.get("mail") as string,
+      password: data.get("password") as string,
+      userName: data.get("userName") as string,
+      name: data.get("name") as string,
+      firstName: data.get("firstName") as string,
     });
-    notify({ msg: "success", type: "success" });
-    notify({ msg: "default" });
   };
 
   return (
@@ -74,6 +79,17 @@ export function Register() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="given-name"
+                  name="userName"
+                  required
+                  fullWidth
+                  id="userName"
+                  label="User Name"
+                  autoFocus
+                />
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
@@ -89,9 +105,9 @@ export function Register() {
                 <TextField
                   required
                   fullWidth
-                  id="lastName"
+                  id="name"
                   label="Last Name"
-                  name="lastName"
+                  name="name"
                   autoComplete="family-name"
                 />
               </Grid>
@@ -99,9 +115,9 @@ export function Register() {
                 <TextField
                   required
                   fullWidth
-                  id="email"
+                  id="mail"
                   label="Email Address"
-                  name="email"
+                  name="mail"
                   autoComplete="email"
                 />
               </Grid>

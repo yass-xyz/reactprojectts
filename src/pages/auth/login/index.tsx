@@ -12,6 +12,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useAuthStore } from "@/providers/auth/AuthProvider";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Copyright(props: any) {
@@ -36,6 +37,7 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export function Login() {
+  const { loginUser } = useAuthStore();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -43,6 +45,7 @@ export function Login() {
       email: data.get("email"),
       password: data.get("password"),
     });
+    loginUser({ email: "1" });
   };
 
   return (
